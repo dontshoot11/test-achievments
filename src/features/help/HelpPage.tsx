@@ -15,32 +15,32 @@ const TOPICS = [
   {
     id: 'trading-basics',
     icon: CircleHelp,
-    title: 'Как устроены демо-сделки?',
-    lead: 'Коротко о направлении прогноза, экспирации и расчёте результата.',
+    title: 'How do demo simulations work?',
+    lead: 'A quick overview of predictions, duration, and result calculation.',
     paragraphs: [
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer pretium, justo vel cursus tempor, nisi mauris consequat sapien, vitae commodo arcu ligula sed neque.',
-      'Aenean tristique tellus non lacus tincidunt, ut volutpat lorem feugiat. Выберите актив, сумму и время сделки, затем укажите ожидаемое направление движения цены.',
+      'Choose a dataset, an amount, and a duration, then select the direction in which you expect the generated value to move.',
     ],
   },
   {
     id: 'userscore-guide',
     icon: Sparkles,
-    title: 'Как работают ачивки и прокачка?',
-    lead: 'Userscore, уровни маскота, задания и эксклюзивные предметы.',
+    title: 'How do achievements and progression work?',
+    lead: 'Userscore, mascot levels, challenges, and exclusive items.',
     paragraphs: [
-      'Ачивки отмечают важные действия пользователя: первую сделку, серию побед, изучение платформы и регулярные возвращения. У каждой ачивки есть понятное условие, прогресс и награда в userscore. Обычная ачивка открывается один раз, поэтому повторное выполнение условия не дублирует награду.',
-      'Userscore определяет уровень профиля. Всего предусмотрено пять ступеней: Новичок, Трейдер, Про, Эксперт и Гуру. При достижении нового порога меняются статус, оформление профиля и версия зелёного треугольного маскота. Полоска в верхней панели показывает, сколько очков осталось до следующего уровня.',
-      'Задание дня выбирается заново каждый календарный день и приносит повторяемую награду. Задание месяца требует серии более значимых действий: в демо достаточно закрыть 5 сделок в плюс. За него пользователь получает userscore и эксклюзивный тематический предмет. Полученные предметы навсегда остаются в гардеробе — их можно надевать на маскота, менять или снимать.',
+      'Achievements mark meaningful actions such as completing a first simulation, building a success streak, exploring the workspace, and returning regularly. Every achievement has a clear requirement, progress indicator, and userscore reward. Standard achievements unlock once, so repeating the action does not duplicate the reward.',
+      'Userscore determines your profile level. There are five stages: Beginner, Explorer, Advanced, Expert, and Master. Reaching a new threshold updates the profile status, styling, and version of the green triangular mascot. The progress bar in the top panel shows how many points remain until the next level.',
+      'A new daily challenge is selected each calendar day and offers a repeatable reward. The monthly challenge requires a larger set of actions: complete 5 successful simulations in the demo. It awards userscore and an exclusive themed item. Unlocked items remain in your collection permanently and can be equipped, changed, or removed.',
     ],
   },
   {
     id: 'safe-demo',
     icon: ShieldCheck,
-    title: 'Это настоящая торговля?',
-    lead: 'О данных, балансе и ограничениях демонстрационного режима.',
+    title: 'Does this use real-world data?',
+    lead: 'About generated data, the demo balance, and workspace limitations.',
     paragraphs: [
-      'Nullam commodo, felis ac faucibus efficitur, turpis augue viverra mi, eget posuere ipsum libero id lectus. Все котировки создаются локальным генератором случайных тиков.',
-      'Donec vulputate sem at erat volutpat, ut tincidunt elit volutpat. Демо не подключено к брокеру, реальным деньгам, аккаунтам или платёжным системам.',
+      'All values are created locally by a deterministic generator. No external or real-time data source is used.',
+      'The demo is not connected to financial services, real money, user accounts, or payment systems. Every action is part of a self-contained simulation.',
     ],
   },
 ]
@@ -66,13 +66,13 @@ export function HelpPage() {
       <header className="help-hero panel">
         <div>
           <span className="help-icon"><LifeBuoy /></span>
-          <p className="eyebrow">База знаний Orbit</p>
-          <h1>Хелп-центр</h1>
-          <p>Всё, что нужно знать перед первым прогнозом. Или почти всё.</p>
+          <p className="eyebrow">Demo knowledge base</p>
+          <h1>Help Center</h1>
+          <p>Everything you need to know before your first simulation.</p>
         </div>
         <div className="reading-progress">
           <strong>{helpTopics.length}/3</strong>
-          <span>темы изучено</span>
+          <span>topics explored</span>
           <div className="mini-track">
             <i style={{ width: `${(helpTopics.length / 3) * 100}%` }} />
           </div>
@@ -83,10 +83,10 @@ export function HelpPage() {
         <section className="help-content">
           <div className="section-heading">
             <div>
-              <p className="eyebrow">Начните отсюда</p>
-              <h2>Популярные вопросы</h2>
+              <p className="eyebrow">Start here</p>
+              <h2>Popular questions</h2>
             </div>
-            <span>~ 3 минуты</span>
+            <span>~ 3 minutes</span>
           </div>
 
           <div className="help-topics">
@@ -118,15 +118,15 @@ export function HelpPage() {
           <section className="reading-finish panel">
             <BookOpenCheck />
             <div>
-              <h2>{isComplete ? 'Руководство прочитано' : 'Дочитали до конца?'}</h2>
+              <h2>{isComplete ? 'Guide completed' : 'Finished reading?'}</h2>
               <p>
                 {isComplete
-                  ? 'Ачивка уже в вашей коллекции, а userscore начислен.'
-                  : 'Зафиксируйте прочтение и заберите награду за полезное любопытство.'}
+                  ? 'The achievement is already in your collection and the userscore has been added.'
+                  : 'Mark the guide as complete and collect your reward for exploring.'}
               </p>
             </div>
             <button disabled={isComplete} onClick={completeHelp}>
-              {isComplete ? <><Check /> Готово</> : 'Завершить чтение · +70'}
+              {isComplete ? <><Check /> Done</> : 'Complete reading · +70'}
             </button>
           </section>
         </section>
@@ -134,16 +134,16 @@ export function HelpPage() {
         <aside className="help-aside">
           <section className="support-card panel">
             <MessageCircleQuestion />
-            <h2>Не нашли ответ?</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Команда поддержки скоро будет здесь.</p>
-            <button disabled>Написать в поддержку</button>
-            <small>Демо-элемент · без отправки данных</small>
+            <h2>Could not find an answer?</h2>
+            <p>A support option may be added here in a future version.</p>
+            <button disabled>Contact support</button>
+            <small>Demo element · no data is sent</small>
           </section>
           <section className="tip-card panel">
             <Sparkles />
             <div>
-              <strong>Совет</strong>
-              <p>Откройте все три темы — за исследование справки спрятана отдельная награда.</p>
+              <strong>Tip</strong>
+              <p>Open all three topics to discover an additional exploration reward.</p>
             </div>
           </section>
         </aside>

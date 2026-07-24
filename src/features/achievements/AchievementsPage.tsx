@@ -76,22 +76,22 @@ export function AchievementsPage() {
     <div className="achievements-page">
       <header className="page-title">
         <div>
-          <p className="eyebrow">Коллекция прогресса</p>
-          <h1>Ачивки</h1>
-          <p>Торгуйте, исследуйте рынок и развивайте своего маскота.</p>
+          <p className="eyebrow">Progress collection</p>
+          <h1>Achievements</h1>
+          <p>Explore the demo, complete simulations, and evolve your mascot.</p>
         </div>
-        <span className="count-badge">{Object.keys(unlocked).length} / {ACHIEVEMENTS.length} открыто</span>
+        <span className="count-badge">{Object.keys(unlocked).length} / {ACHIEVEMENTS.length} unlocked</span>
       </header>
 
       <section className="progress-hero panel">
         <Avatar
           src={level.avatar}
-          alt={`Аватар уровня ${level.name}`}
+          alt={`${level.name} level avatar`}
           cosmeticId={selectedCosmetic}
           className="hero-avatar"
         />
         <div className="hero-copy">
-          <span className="level-label" style={{ color: level.color }}>Уровень {level.id} · {level.name}</span>
+          <span className="level-label" style={{ color: level.color }}>Level {level.id} · {level.name}</span>
           <h2>{level.description}</h2>
           <div className="hero-score"><strong>{score}</strong><span>userscore</span></div>
           <div className="score-track">
@@ -103,10 +103,10 @@ export function AchievementsPage() {
               }}
             />
           </div>
-          <p>{nextLevel ? `Ещё ${nextLevel.minScore - score} до уровня «${nextLevel.name}»` : 'Максимальный уровень достигнут'}</p>
+          <p>{nextLevel ? `${nextLevel.minScore - score} more to reach ${nextLevel.name}` : 'Maximum level reached'}</p>
         </div>
         <div className="hero-stat">
-          <span>Общий прогресс</span>
+          <span>Overall progress</span>
           <strong>{Math.round((Object.keys(unlocked).length / ACHIEVEMENTS.length) * 100)}%</strong>
         </div>
       </section>
@@ -120,16 +120,16 @@ export function AchievementsPage() {
             })()}
           </span>
           <div className="daily-copy">
-            <span>Задание дня · обновится завтра</span>
+            <span>Daily challenge · refreshes tomorrow</span>
             <h2>{dailyDefinition.title}</h2>
             <p>{dailyDefinition.description}</p>
           </div>
           <div className="daily-status">
-            <strong>{dailyTask.completed ? <><Check /> Выполнено</> : `${dailyTask.progress}/${dailyDefinition.target}`}</strong>
+            <strong>{dailyTask.completed ? <><Check /> Completed</> : `${dailyTask.progress}/${dailyDefinition.target}`}</strong>
             <div className="score-track">
               <span style={{ width: `${(dailyTask.progress / dailyDefinition.target) * 100}%` }} />
             </div>
-            <small>Награда +75 userscore</small>
+            <small>Reward +75 userscore</small>
           </div>
         </section>
       )}
@@ -138,23 +138,23 @@ export function AchievementsPage() {
         <section className={`monthly-task panel ${monthlyTask.completed ? 'completed' : ''}`}>
           <div className="monthly-reward">
             <span>{monthlyReward.icon}</span>
-            <small>Эксклюзив</small>
+            <small>Exclusive</small>
           </div>
           <div className="monthly-copy">
-            <span>Задание месяца · {monthlyTask.month}</span>
-            <h2>Лига профита</h2>
-            <p>Завершите 5 сделок в плюс и получите предмет «{monthlyReward.name}».</p>
+            <span>Monthly challenge · {monthlyTask.month}</span>
+            <h2>Monthly Milestone</h2>
+            <p>Complete 5 successful simulations to receive the {monthlyReward.name} item.</p>
             <div className="monthly-progress">
               <div className="score-track">
                 <span style={{ width: `${(monthlyTask.progress / 5) * 100}%` }} />
               </div>
-              <strong>{monthlyTask.progress}/5 побед</strong>
+              <strong>{monthlyTask.progress}/5 successes</strong>
             </div>
           </div>
           <div className="monthly-prize">
-            <span>Награда месяца</span>
+            <span>Monthly reward</span>
             <strong>{monthlyReward.name}</strong>
-            <small>+250 userscore · навсегда в гардеробе</small>
+            <small>+250 userscore · permanently added to your collection</small>
           </div>
         </section>
       )}
@@ -162,10 +162,10 @@ export function AchievementsPage() {
       <section className="wardrobe">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Персонализация</p>
-            <h2>Гардероб маскота</h2>
+            <p className="eyebrow">Personalization</p>
+            <h2>Mascot collection</h2>
           </div>
-          <span>{ownedCosmetics.length} предметов получено</span>
+          <span>{ownedCosmetics.length} items unlocked</span>
         </div>
         <div className="wardrobe-list">
           <button
@@ -173,8 +173,8 @@ export function AchievementsPage() {
             onClick={() => selectCosmetic(null)}
           >
             <span>∅</span>
-            <strong>Без предмета</strong>
-            <small>Базовый образ</small>
+            <strong>No item</strong>
+            <small>Default look</small>
           </button>
           {COSMETICS.map((cosmetic) => {
             const isOwned = ownedCosmetics.includes(cosmetic.id)
@@ -187,7 +187,7 @@ export function AchievementsPage() {
               >
                 <span>{isOwned ? cosmetic.icon : '🔒'}</span>
                 <strong>{cosmetic.name}</strong>
-                <small>{isOwned ? 'Эксклюзив получен' : 'Награда за 5 побед'}</small>
+                <small>{isOwned ? 'Exclusive unlocked' : 'Reward for 5 successes'}</small>
               </button>
             )
           })}
@@ -197,16 +197,16 @@ export function AchievementsPage() {
       <div className="achievement-toolbar">
         <div className="filter-tabs">
           {([
-            ['all', 'Все'],
-            ['open', 'Открытые'],
-            ['locked', 'Закрытые'],
+            ['all', 'All'],
+            ['open', 'Unlocked'],
+            ['locked', 'Locked'],
           ] as Array<[Filter, string]>).map(([value, label]) => (
             <button key={value} className={filter === value ? 'active' : ''} onClick={() => setFilter(value)}>
               {label}
             </button>
           ))}
         </div>
-        <p>Награды начисляются только один раз</p>
+        <p>Each reward can be earned only once</p>
       </div>
 
       <div className="achievement-grid">
@@ -222,13 +222,13 @@ export function AchievementsPage() {
               </div>
               <div className="achievement-copy">
                 <span>{achievement.category}</span>
-                <h3>{achievement.hidden && !isOpen ? 'Секретная ачивка' : achievement.title}</h3>
-                <p>{achievement.hidden && !isOpen ? 'Продолжайте исследовать интерфейс' : achievement.description}</p>
+                <h3>{achievement.hidden && !isOpen ? 'Secret achievement' : achievement.title}</h3>
+                <p>{achievement.hidden && !isOpen ? 'Keep exploring the interface' : achievement.description}</p>
               </div>
               <div className="achievement-footer">
                 <div>
                   <div className="mini-track"><span style={{ width: `${Math.min(100, (current / achievement.target) * 100)}%` }} /></div>
-                  <small>{isOpen ? new Date(unlocked[achievement.id]).toLocaleDateString('ru-RU') : `${current} / ${achievement.target}`}</small>
+                  <small>{isOpen ? new Date(unlocked[achievement.id]).toLocaleDateString('en-US') : `${current} / ${achievement.target}`}</small>
                 </div>
                 <strong>+{achievement.reward}</strong>
               </div>

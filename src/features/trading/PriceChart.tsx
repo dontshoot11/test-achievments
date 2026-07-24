@@ -28,6 +28,7 @@ export function PriceChart({ ticks, activeTrade }: PriceChartProps) {
         background: { type: ColorType.Solid, color: 'transparent' },
         textColor: '#66718a',
         fontFamily: 'Inter, system-ui, sans-serif',
+        attributionLogo: false,
       },
       grid: {
         vertLines: { color: 'rgba(255,255,255,.035)' },
@@ -83,10 +84,10 @@ export function PriceChart({ ticks, activeTrade }: PriceChartProps) {
         lineWidth: 1,
         lineStyle: 2,
         axisLabelVisible: true,
-        title: 'Старт',
+        title: 'Start',
       })
     }
   }, [activeTrade])
 
-  return <div ref={containerRef} className="price-chart" aria-label="График цены актива" />
+  return <div ref={containerRef} className="price-chart" aria-label="Dataset value chart" />
 }

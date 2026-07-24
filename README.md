@@ -1,21 +1,21 @@
-# Orbit Trade — userscore prototype
+# Userscore Demo Workspace
 
-Интерактивный прототип торговой платформы для демонстрации ачивок, userscore, уровней и эволюции аватара-маскота.
+An interactive, self-contained prototype that demonstrates achievements, userscore progression, profile levels, and an evolving mascot.
 
-## Онлайн-демо
+## Online demo
 
-[Открыть прототип на GitHub Pages](https://dontshoot11.github.io/test-achievments/)
+[Open the prototype on GitHub Pages](https://dontshoot11.github.io/test-achievments/)
 
-## Запуск
+## Run locally
 
 ```bash
 npm install
 npm run dev
 ```
 
-Vite покажет локальный URL, обычно `http://localhost:5173`.
+Vite will display the local URL, usually `http://localhost:5173`.
 
-## Проверки
+## Quality checks
 
 ```bash
 npm run lint
@@ -23,28 +23,28 @@ npm run test
 npm run build
 ```
 
-## Demo-flow
+## Demo flow
 
-1. На экране «Торговля» выберите BTC/USD или ETH/USD.
-2. Укажите сумму и экспирацию 5 или 10 секунд.
-3. Откройте прогноз «Выше» или «Ниже» и наблюдайте обратный отсчёт.
-4. Посмотрите цепочку событий в live-журнале.
-5. После завершения сделки откроются ачивки и начислится userscore.
-6. Перейдите в «Ачивки», чтобы увидеть прогресс и новый аватар.
-7. Откройте «Хелп-центр», изучите три темы и завершите чтение.
-8. Возвращайтесь в следующие два календарных дня, чтобы открыть серию `3/3`.
-9. Выполните случайное задание дня на экране «Ачивки» и получите повторяемую награду.
-10. Закройте 5 сделок в плюс за месяц, получите футбольный мяч и выберите его в гардеробе.
-11. Для быстрого показа максимального уровня нажмите `Demo boost`.
-12. Для повторного показа используйте «Сбросить демо».
+1. On the Workspace screen, select BTC/USD or ETH/USD.
+2. Enter an amount and choose a duration of 5 or 10 seconds.
+3. Select Higher or Lower and watch the countdown.
+4. Follow the event sequence in the live activity log.
+5. When the simulation finishes, achievements unlock and userscore is awarded.
+6. Open Achievements to review progress and the updated avatar.
+7. Open the Help Center, explore all three topics, and complete the guide.
+8. Return on the next two calendar days to unlock a `3/3` visit streak.
+9. Complete the random daily challenge on the Achievements screen.
+10. Complete 5 successful simulations in a month to unlock the collectible item.
+11. Select `Demo boost` to preview the maximum level.
+12. Select `Reset demo` to restart the experience.
 
-## Архитектура
+## Architecture
 
-- `src/app` — layout и маршрутизация;
-- `src/features/trading` — генератор тиков, график, сделки и единый store;
-- `src/features/achievements` — каталог и экран ачивок;
-- `src/features/help` — интерактивный Хелп-центр и прогресс чтения;
-- `src/shared` — модели и конфигурация прогрессии;
-- `public/avatars` — пять сгенерированных ступеней зелёного треугольного маскота.
+- `src/app` — layout and routing;
+- `src/features/trading` — deterministic data generator, chart, simulations, and central store;
+- `src/features/achievements` — achievement catalog and progression screen;
+- `src/features/help` — interactive Help Center and reading progress;
+- `src/shared` — models and progression configuration;
+- `public/avatars` — five generated stages of the green triangular mascot.
 
-Котировки генерируются локально воспроизводимым псевдослучайным генератором. Прогресс, баланс и сделки сохраняются в `localStorage`. Прототип не использует реальные деньги или рыночные данные.
+All displayed values are generated locally by a reproducible pseudo-random generator. Progress, the demo balance, and simulation history are stored in `localStorage`. The prototype does not use real money, accounts, payment systems, or external data.

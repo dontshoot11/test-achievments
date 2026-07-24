@@ -100,8 +100,8 @@ const baseState = () => ({
   logs: [
     makeLog(
       'system',
-      'Демо запущено',
-      'Генератор котировок работает с фиксированным seed',
+      'Demo started',
+      'The value generator is running with a fixed seed',
     ),
   ],
   unlocked: {} as Record<string, number>,
@@ -137,7 +137,7 @@ const unlock = (state: MutableSnapshot, ids: string[]) => {
     messages.push(`${achievement.title} · +${achievement.reward}`)
     logs = appendLog(
       logs,
-      makeLog('achievement', `Ачивка «${achievement.title}»`, `+${achievement.reward} userscore`),
+      makeLog('achievement', `Achievement: ${achievement.title}`, `+${achievement.reward} userscore`),
     )
   }
 
@@ -148,7 +148,7 @@ const unlock = (state: MutableSnapshot, ids: string[]) => {
     messages.push(`${century.title} · +${century.reward}`)
     logs = appendLog(
       logs,
-      makeLog('achievement', `Ачивка «${century.title}»`, `+${century.reward} userscore`),
+      makeLog('achievement', `Achievement: ${century.title}`, `+${century.reward} userscore`),
     )
   }
 
@@ -157,9 +157,9 @@ const unlock = (state: MutableSnapshot, ids: string[]) => {
   if (nextLevel.id > previousLevel.id) {
     logs = appendLog(
       logs,
-      makeLog('progression', `Новый уровень: ${nextLevel.name}`, 'Аватар профиля обновлён'),
+      makeLog('progression', `New level: ${nextLevel.name}`, 'Profile avatar updated'),
     )
-    messages.push(`Уровень ${nextLevel.name} открыт`)
+    messages.push(`${nextLevel.name} level unlocked`)
   }
 
   return {
@@ -198,7 +198,7 @@ const advanceDailyTask = <T extends TradingState>(
       state.logs,
       makeLog(
         completed ? 'achievement' : 'progression',
-        completed ? 'Задание дня выполнено' : 'Прогресс задания дня',
+        completed ? 'Daily challenge completed' : 'Daily challenge progress',
         `${definition.title} · ${progress}/${definition.target}`,
       ),
     ),
@@ -228,10 +228,10 @@ const advanceMonthlyTask = <T extends TradingState>(state: T): T => {
       state.logs,
       makeLog(
         completed ? 'achievement' : 'progression',
-        completed ? 'Задание месяца выполнено' : 'Прогресс задания месяца',
+        completed ? 'Monthly challenge completed' : 'Monthly challenge progress',
         completed
-          ? `${reward.name} добавлен в гардероб`
-          : `Прибыльные сделки · ${progress}/5`,
+          ? `${reward.name} added to your collection`
+          : `Successful simulations · ${progress}/5`,
       ),
     ),
   } as T
@@ -256,7 +256,7 @@ export const useTradingStore = create<TradingState>()(
             progress: { ...state.progress, 'curious-clicker': Math.min(switches, 5) },
             logs: appendLog(
               state.logs,
-              makeLog('setting', 'Актив изменён', `${ASSETS[state.selectedAsset].symbol} → ${ASSETS[asset].symbol}`),
+              makeLog('setting', 'Dataset changed', `${ASSETS[state.selectedAsset].symbol} → ${ASSETS[asset].symbol}`),
             ),
           }
           const withDailyProgress = advanceDailyTask(next, 'switch-assets')
@@ -269,7 +269,7 @@ export const useTradingStore = create<TradingState>()(
           amount,
           logs: appendLog(
             state.logs,
-            makeLog('setting', 'Сумма изменена', `$${state.amount} → $${amount}`),
+            makeLog('setting', 'Amount changed', `$${state.amount} → $${amount}`),
           ),
         })),
       setDuration: (duration) =>
@@ -277,7 +277,7 @@ export const useTradingStore = create<TradingState>()(
           duration,
           logs: appendLog(
             state.logs,
-            makeLog('setting', 'Экспирация изменена', `${state.duration}с → ${duration}с`),
+            makeLog('setting', 'Duration changed', `${state.duration}s → ${duration}s`),
           ),
         })),
       openTrade: (direction) =>
@@ -319,11 +319,11 @@ export const useTradingStore = create<TradingState>()(
                 state.logs,
                 makeLog(
                   'trade',
-                  `Сделка открыта · ${direction === 'up' ? 'Выше' : 'Ниже'}`,
-                  `${ASSETS[state.selectedAsset].symbol} · $${state.amount} · ${state.duration}с · ${price}`,
+                  `Simulation started · ${direction === 'up' ? 'Higher' : 'Lower'}`,
+                  `${ASSETS[state.selectedAsset].symbol} · $${state.amount} · ${state.duration}s · ${price}`,
                 ),
               ),
-              makeLog('balance', 'Сумма зарезервирована', `Баланс −$${state.amount}`),
+              makeLog('balance', 'Amount reserved', `Balance −$${state.amount}`),
             ),
           }
           const withAchievements = { ...next, ...unlock(next, ids) }
@@ -351,7 +351,7 @@ export const useTradingStore = create<TradingState>()(
             const currentPrice = histories[active.assetId].at(-1)!.value
             logs = appendLog(
               logs,
-              makeLog('market', 'Тик активной сделки', `${ASSETS[active.assetId].symbol} · ${currentPrice}`),
+              makeLog('market', 'Active simulation update', `${ASSETS[active.assetId].symbol} · ${currentPrice}`),
             )
             if (Date.now() >= active.expiresAt) {
               const movedUp = currentPrice > active.openPrice
@@ -383,8 +383,8 @@ export const useTradingStore = create<TradingState>()(
                 logs,
                 makeLog(
                   'trade',
-                  result === 'win' ? 'Сделка выиграна' : result === 'draw' ? 'Ничья' : 'Сделка завершена',
-                  `${active.openPrice} → ${currentPrice} · ${payout ? `+$${payout.toFixed(0)}` : 'без выплаты'}`,
+                  result === 'win' ? 'Simulation successful' : result === 'draw' ? 'No change' : 'Simulation completed',
+                  `${active.openPrice} → ${currentPrice} · ${payout ? `+$${payout.toFixed(0)}` : 'no result'}`,
                 ),
               )
               const next = {
@@ -408,7 +408,7 @@ export const useTradingStore = create<TradingState>()(
           return { histories, seeds, logs }
         }),
       clearLogs: () =>
-        set({ logs: [makeLog('system', 'Журнал очищен', 'Новые события появятся здесь')] }),
+        set({ logs: [makeLog('system', 'Log cleared', 'New events will appear here')] }),
       clearToast: () => set({ toast: null }),
       resetDemo: () => set(baseState()),
       boostDemo: () =>
@@ -418,10 +418,10 @@ export const useTradingStore = create<TradingState>()(
             ...state,
             score: 940,
             unlocked,
-            toast: 'Demo boost: уровень Гуру открыт',
+            toast: 'Demo boost: Master level unlocked',
             logs: appendLog(
               state.logs,
-              makeLog('progression', 'Demo boost включён', 'Профиль переведён на уровень Гуру'),
+              makeLog('progression', 'Demo boost enabled', 'Profile advanced to the Master level'),
             ),
           }
         }),
@@ -452,7 +452,7 @@ export const useTradingStore = create<TradingState>()(
               completed: false,
               actionKeys: [],
             }
-            logs = appendLog(logs, makeLog('system', 'Новое задание дня', dailyDefinition.title))
+            logs = appendLog(logs, makeLog('system', 'New daily challenge', dailyDefinition.title))
           }
 
           if (!hasCurrentMonthly) {
@@ -467,7 +467,7 @@ export const useTradingStore = create<TradingState>()(
             }
             logs = appendLog(
               logs,
-              makeLog('system', 'Новое задание месяца', `Награда: ${monthlyReward.name}`),
+              makeLog('system', 'New monthly challenge', `Reward: ${monthlyReward.name}`),
             )
           }
 
@@ -486,8 +486,8 @@ export const useTradingStore = create<TradingState>()(
               logs,
               makeLog(
                 'progression',
-                'Ежедневная серия',
-                `${Math.min(streak, 3)}/3 · заход засчитан`,
+                'Daily streak',
+                `${Math.min(streak, 3)}/3 · visit counted`,
               ),
             )
           }
@@ -533,7 +533,7 @@ export const useTradingStore = create<TradingState>()(
             progress,
             logs: appendLog(
               state.logs,
-              makeLog('system', 'Тема справки открыта', `${helpTopics.length}/3 темы изучено`),
+              makeLog('system', 'Help topic opened', `${helpTopics.length}/3 topics explored`),
             ),
           }
           const withAchievements = helpTopics.length >= 3
@@ -549,7 +549,7 @@ export const useTradingStore = create<TradingState>()(
             progress: { ...state.progress, 'help-reader': 1 },
             logs: appendLog(
               state.logs,
-              makeLog('system', 'Руководство прочитано', 'Материал Хелп-центра завершён'),
+              makeLog('system', 'Guide completed', 'Help Center material completed'),
             ),
           }
           return { ...next, ...unlock(next, ['help-reader']) }
@@ -564,15 +564,15 @@ export const useTradingStore = create<TradingState>()(
               state.logs,
               makeLog(
                 'progression',
-                'Образ маскота изменён',
-                cosmetic?.name ?? 'Без предмета',
+                'Mascot appearance changed',
+                cosmetic?.name ?? 'No item',
               ),
             ),
           }
         }),
     }),
     {
-      name: 'orbit-trade-demo-v1',
+      name: 'demo-workspace-v1',
       partialize: (state) => ({
         balance: state.balance,
         score: state.score,
