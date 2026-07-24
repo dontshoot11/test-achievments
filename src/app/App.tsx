@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { AchievementsPage } from '../features/achievements/AchievementsPage'
 import { HelpPage } from '../features/help/HelpPage'
+import { Onboarding } from '../features/onboarding/Onboarding'
 import { TradePage } from '../features/trading/TradePage'
 import { useTradingStore } from '../features/trading/store'
 import { ACHIEVEMENTS, getLevel, getNextLevel } from '../shared/config'
@@ -134,6 +135,7 @@ export function App() {
           </Routes>
         </main>
       </div>
+      <Onboarding />
       <Toast />
     </div>
   )

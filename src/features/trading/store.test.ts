@@ -19,6 +19,19 @@ describe('demo simulation lifecycle', () => {
     expect(state.score).toBe(60)
   })
 
+  it('unlocks the onboarding achievement only once', () => {
+    useTradingStore.getState().completeOnboarding()
+
+    const completed = useTradingStore.getState()
+    expect(completed.onboardingCompleted).toBe(true)
+    expect(completed.progress['welcome-aboard']).toBe(1)
+    expect(completed.unlocked['welcome-aboard']).toBeTypeOf('number')
+    expect(completed.score).toBe(50)
+
+    useTradingStore.getState().completeOnboarding()
+    expect(useTradingStore.getState().score).toBe(50)
+  })
+
   it('completes a 5-second simulation and awards userscore once', () => {
     useTradingStore.getState().openTrade('up')
     vi.advanceTimersByTime(5_100)
