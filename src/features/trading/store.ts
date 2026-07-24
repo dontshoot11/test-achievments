@@ -46,6 +46,7 @@ interface TradingState {
   monthlyTask: MonthlyTaskState | null
   ownedCosmetics: string[]
   selectedCosmetic: string | null
+  onboardingCompleted: boolean
   toast: string | null
   registerVisit: () => void
   visitPage: (page: string) => void
@@ -59,6 +60,7 @@ interface TradingState {
   marketTick: () => void
   clearLogs: () => void
   clearToast: () => void
+  completeOnboarding: () => void
   resetDemo: () => void
   boostDemo: () => void
 }
@@ -117,6 +119,7 @@ const baseState = () => ({
   monthlyTask: null as MonthlyTaskState | null,
   ownedCosmetics: [] as string[],
   selectedCosmetic: null as string | null,
+  onboardingCompleted: false,
   toast: null as string | null,
 })
 
@@ -410,6 +413,20 @@ export const useTradingStore = create<TradingState>()(
       clearLogs: () =>
         set({ logs: [makeLog('system', 'Log cleared', 'New events will appear here')] }),
       clearToast: () => set({ toast: null }),
+      completeOnboarding: () =>
+        set((state) => {
+          if (state.onboardingCompleted) return state
+          const next = {
+            ...state,
+            onboardingCompleted: true,
+            progress: { ...state.progress, 'welcome-aboard': 1 },
+            logs: appendLog(
+              state.logs,
+              makeLog('system', 'Getting-started tour completed', 'Your first reward is ready'),
+            ),
+          }
+          return { ...next, ...unlock(next, ['welcome-aboard']) }
+        }),
       resetDemo: () => set(baseState()),
       boostDemo: () =>
         set((state) => {
@@ -590,6 +607,7 @@ export const useTradingStore = create<TradingState>()(
         monthlyTask: state.monthlyTask,
         ownedCosmetics: state.ownedCosmetics,
         selectedCosmetic: state.selectedCosmetic,
+        onboardingCompleted: state.onboardingCompleted,
       }),
     },
   ),

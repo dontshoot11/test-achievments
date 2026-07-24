@@ -73,6 +73,15 @@ export const LEVELS: Level[] = [
 
 export const ACHIEVEMENTS: AchievementDefinition[] = [
   {
+    id: 'welcome-aboard',
+    title: 'Welcome Aboard',
+    description: 'Complete the getting-started tour',
+    reward: 50,
+    category: 'Getting started',
+    target: 1,
+    icon: 'Sparkles',
+  },
+  {
     id: 'first-trade',
     title: 'First Prediction',
     description: 'Start your first simulation',
