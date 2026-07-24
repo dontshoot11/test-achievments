@@ -26,14 +26,14 @@ const money = new Intl.NumberFormat('en-US', {
 })
 
 const EVENT_LABELS: Record<EventType | 'all', string> = {
-  all: 'Все',
-  system: 'Система',
-  market: 'Тики',
-  setting: 'Настройки',
-  trade: 'Сделки',
-  balance: 'Баланс',
-  achievement: 'Ачивки',
-  progression: 'Уровни',
+  all: 'All',
+  system: 'System',
+  market: 'Updates',
+  setting: 'Settings',
+  trade: 'Simulations',
+  balance: 'Balance',
+  achievement: 'Achievements',
+  progression: 'Levels',
 }
 
 function TradeControls() {
@@ -59,8 +59,8 @@ function TradeControls() {
     <aside className="trade-panel panel">
       <div className="panel-heading">
         <div>
-          <p className="eyebrow">Новая сделка</p>
-          <h2>Ваш прогноз</h2>
+          <p className="eyebrow">New simulation</p>
+          <h2>Your prediction</h2>
         </div>
         <CircleDollarSign size={20} aria-hidden />
       </div>
@@ -69,22 +69,22 @@ function TradeControls() {
         <div className="active-trade">
           <div className="countdown-ring" style={{ '--progress': remaining / (activeTrade.duration * 1000) } as React.CSSProperties}>
             <strong>{(remaining / 1000).toFixed(1)}</strong>
-            <span>сек</span>
+            <span>sec</span>
           </div>
           <div>
             <span className={`direction-pill ${activeTrade.direction}`}>
               {activeTrade.direction === 'up' ? <ArrowUpRight size={15} /> : <ArrowDownRight size={15} />}
-              {activeTrade.direction === 'up' ? 'Выше' : 'Ниже'}
+              {activeTrade.direction === 'up' ? 'Higher' : 'Lower'}
             </span>
             <h3>{ASSETS[activeTrade.assetId].symbol}</h3>
-            <p>Старт: {money.format(activeTrade.openPrice)}</p>
-            <p>Сумма: {money.format(activeTrade.amount)}</p>
+            <p>Start: {money.format(activeTrade.openPrice)}</p>
+            <p>Amount: {money.format(activeTrade.amount)}</p>
           </div>
         </div>
       ) : (
         <>
           <label className="field">
-            <span>Сумма сделки</span>
+            <span>Simulation amount</span>
             <div className="amount-input">
               <span>$</span>
               <input
@@ -96,49 +96,49 @@ function TradeControls() {
                 onChange={(event) => setAmount(Number(event.target.value))}
               />
             </div>
-            {invalid && <small>Доступно от $10 до {money.format(balance)}</small>}
+            {invalid && <small>Enter between $10 and {money.format(balance)}</small>}
           </label>
-          <div className="amount-stepper" aria-label="Изменение суммы">
-            <button onClick={() => setAmount(Math.max(10, amount - 10))} aria-label="Уменьшить сумму">
+          <div className="amount-stepper" aria-label="Change amount">
+            <button onClick={() => setAmount(Math.max(10, amount - 10))} aria-label="Decrease amount">
               <Minus />
             </button>
-            <button onClick={() => setAmount(Math.min(balance, amount + 10))} aria-label="Увеличить сумму">
+            <button onClick={() => setAmount(Math.min(balance, amount + 10))} aria-label="Increase amount">
               <Plus />
             </button>
           </div>
           <fieldset className="duration-picker">
-            <legend>Время сделки</legend>
+            <legend>Simulation duration</legend>
             {[5, 10].map((value) => (
               <button
                 key={value}
                 className={duration === value ? 'selected' : ''}
                 onClick={() => setDuration(value as 5 | 10)}
               >
-                <Clock3 size={15} /> {value} сек
+                <Clock3 size={15} /> {value} sec
               </button>
             ))}
           </fieldset>
           <div className="payout-row">
-            <span>Потенциальная выплата</span>
+            <span>Potential result</span>
             <strong>{money.format(amount * 1.8)}</strong>
           </div>
           <div className="orders-status">
-            <strong>Ордера активны</strong>
+            <strong>Simulation ready</strong>
             <Clock3 />
           </div>
           <div className="direction-buttons">
             <button className="trade-button up" disabled={invalid} onClick={() => openTrade('up')}>
-              <ArrowUpRight /> Выше
+              <ArrowUpRight /> Higher
             </button>
             <button className="trade-button down" disabled={invalid} onClick={() => openTrade('down')}>
-              <ArrowDownRight /> Ниже
+              <ArrowDownRight /> Lower
             </button>
           </div>
         </>
       )}
       <div className="balance-line">
         <Wallet size={16} />
-        Демо-баланс <strong>{money.format(balance)}</strong>
+        Demo balance <strong>{money.format(balance)}</strong>
       </div>
     </aside>
   )
@@ -157,19 +157,19 @@ function EventLog() {
           <ScrollText size={18} />
           <div>
             <p className="eyebrow">Live telemetry</p>
-            <h2>Журнал событий</h2>
+            <h2>Activity log</h2>
           </div>
         </div>
         <div className="log-actions">
           <label>
-            <span className="sr-only">Фильтр событий</span>
+            <span className="sr-only">Filter events</span>
             <select value={filter} onChange={(event) => setFilter(event.target.value as EventType | 'all')}>
               {Object.entries(EVENT_LABELS).map(([value, label]) => (
                 <option key={value} value={value}>{label}</option>
               ))}
             </select>
           </label>
-          <button className="icon-button" onClick={clearLogs} aria-label="Очистить журнал">
+          <button className="icon-button" onClick={clearLogs} aria-label="Clear log">
             <Eraser size={17} />
           </button>
         </div>
@@ -177,7 +177,7 @@ function EventLog() {
       <div className="log-list">
         {[...filtered].reverse().slice(0, 28).map((log) => (
           <article className="log-item" key={log.id}>
-            <time>{new Date(log.timestamp).toLocaleTimeString('ru-RU', { minute: '2-digit', second: '2-digit' })}</time>
+            <time>{new Date(log.timestamp).toLocaleTimeString('en-US', { minute: '2-digit', second: '2-digit' })}</time>
             <span className={`event-dot ${log.type}`} />
             <div>
               <strong>{log.title}</strong>
@@ -198,12 +198,12 @@ function TradeHistory() {
       <div className="panel-heading compact">
         <Clock3 size={18} />
         <div>
-          <p className="eyebrow">Последние результаты</p>
-          <h2>История сделок</h2>
+          <p className="eyebrow">Latest results</p>
+          <h2>Simulation history</h2>
         </div>
       </div>
       {trades.length === 0 ? (
-        <div className="empty-state">Первая завершённая сделка появится здесь</div>
+        <div className="empty-state">Your first completed simulation will appear here</div>
       ) : (
         <div className="history-list">
           {trades.slice(0, 5).map((trade) => (
@@ -213,10 +213,10 @@ function TradeHistory() {
               </span>
               <div>
                 <strong>{ASSETS[trade.assetId].symbol}</strong>
-                <small>{trade.duration} сек · {money.format(trade.amount)}</small>
+                <small>{trade.duration} sec · {money.format(trade.amount)}</small>
               </div>
               <span className={`result ${trade.result}`}>
-                {trade.result === 'win' ? `+${money.format(trade.payout ?? 0)}` : trade.result === 'draw' ? 'Возврат' : '−'}
+                {trade.result === 'win' ? `+${money.format(trade.payout ?? 0)}` : trade.result === 'draw' ? 'Returned' : '−'}
               </span>
             </article>
           ))}
@@ -248,7 +248,7 @@ export function TradePage() {
       <section className="market panel">
         <div className="market-header">
           <div className="asset-switcher">
-            <button className="terminal-add" aria-label="Добавить актив"><Plus /></button>
+            <button className="terminal-add" aria-label="Add dataset"><Plus /></button>
             {(Object.keys(ASSETS) as Array<keyof typeof ASSETS>).map((id) => (
               <button
                 key={id}
@@ -260,11 +260,11 @@ export function TradePage() {
               </button>
             ))}
           </div>
-          <button className="market-status"><span /> Рынок открыт <ChevronDown size={15} /></button>
+          <button className="market-status"><span /> Simulation active <ChevronDown size={15} /></button>
         </div>
         <div className="quote-row">
           <div>
-            <p className="eyebrow">Текущая цена</p>
+            <p className="eyebrow">Current value</p>
             <strong className="current-price">{money.format(current)}</strong>
             <span className={`price-change ${positive ? 'positive' : 'negative'}`}>
               {positive ? <ArrowUpRight size={15} /> : <ArrowDownRight size={15} />}
@@ -277,10 +277,10 @@ export function TradePage() {
           </dl>
         </div>
         <div className="chart-stage">
-          <div className="chart-tools" aria-label="Инструменты графика">
+          <div className="chart-tools" aria-label="Chart tools">
             <button className="active">5s</button>
-            <button aria-label="Свечной график"><CandlestickChart /></button>
-            <button aria-label="Сигналы"><Radio /></button>
+            <button aria-label="Candlestick chart"><CandlestickChart /></button>
+            <button aria-label="Signals"><Radio /></button>
           </div>
           <PriceChart ticks={ticks} activeTrade={chartTrade} />
         </div>

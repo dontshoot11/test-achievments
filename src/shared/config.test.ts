@@ -1,19 +1,19 @@
 import { describe, expect, it } from 'vitest'
 import { getLevel, getNextLevel } from './config'
 
-describe('уровни userscore', () => {
+describe('userscore levels', () => {
   it.each([
-    [0, 'Новичок'],
-    [100, 'Трейдер'],
-    [250, 'Про'],
-    [500, 'Эксперт'],
-    [900, 'Гуру'],
-  ])('возвращает правильный уровень для %i', (score, name) => {
+    [0, 'Beginner'],
+    [100, 'Explorer'],
+    [250, 'Advanced'],
+    [500, 'Expert'],
+    [900, 'Master'],
+  ])('returns the correct level for %i', (score, name) => {
     expect(getLevel(score).name).toBe(name)
   })
 
-  it('возвращает следующую ступень и завершает прогрессию на Гуру', () => {
-    expect(getNextLevel(99)?.name).toBe('Трейдер')
+  it('returns the next level and ends progression at Master', () => {
+    expect(getNextLevel(99)?.name).toBe('Explorer')
     expect(getNextLevel(900)).toBeUndefined()
   })
 })

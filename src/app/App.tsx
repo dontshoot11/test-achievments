@@ -24,22 +24,22 @@ function Sidebar() {
   const boostDemo = useTradingStore((state) => state.boostDemo)
 
   const reset = () => {
-    if (window.confirm('Сбросить баланс, userscore, сделки и все ачивки?')) resetDemo()
+    if (window.confirm('Reset the balance, userscore, simulations, and all achievements?')) resetDemo()
   }
 
   return (
     <aside className="sidebar">
-      <div className="brand"><span><BarChart3 /></span><strong>Orbit</strong></div>
-      <nav aria-label="Главное меню">
-        <NavLink to="/trade"><BarChart3 /><span>Торговля</span></NavLink>
+      <div className="brand"><span><BarChart3 /></span><strong>Demo Workspace</strong></div>
+      <nav aria-label="Main navigation">
+        <NavLink to="/trade"><BarChart3 /><span>Workspace</span></NavLink>
         <NavLink to="/achievements">
-          <Trophy /><span>Ачивки</span><b>{unlockedCount}/{ACHIEVEMENTS.length}</b>
+          <Trophy /><span>Achievements</span><b>{unlockedCount}/{ACHIEVEMENTS.length}</b>
         </NavLink>
-        <NavLink to="/help"><LifeBuoy /><span>Хелп-центр</span></NavLink>
+        <NavLink to="/help"><LifeBuoy /><span>Help Center</span></NavLink>
       </nav>
       <div className="sidebar-bottom">
         <button onClick={boostDemo}><Zap /><span>Demo boost</span></button>
-        <button onClick={reset}><RotateCcw /><span>Сбросить демо</span></button>
+        <button onClick={reset}><RotateCcw /><span>Reset demo</span></button>
         <div className="demo-chip"><i /> Demo environment</div>
       </div>
     </aside>
@@ -67,8 +67,8 @@ function ProfileBar() {
           <strong>${balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong>
           <small>Demo Account</small>
         </div>
-        <button className="payments-button">Пополнить</button>
-        <button className="icon-button notification-button" aria-label="Уведомления"><Bell size={18} /></button>
+        <button className="payments-button">Add funds</button>
+        <button className="icon-button notification-button" aria-label="Notifications"><Bell size={18} /></button>
         <NavLink to="/achievements" className="profile-score">
           <Avatar src={level.avatar} alt="" cosmeticId={selectedCosmetic} className="profile-avatar" />
           <div>
@@ -77,7 +77,7 @@ function ProfileBar() {
           </div>
           <Sparkles size={16} />
         </NavLink>
-        <button className="icon-button user-button" aria-label="Профиль"><UserRound size={18} /></button>
+        <button className="icon-button user-button" aria-label="Profile"><UserRound size={18} /></button>
       </div>
     </header>
   )

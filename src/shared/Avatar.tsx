@@ -14,7 +14,7 @@ export function Avatar({ src, alt, cosmeticId, className = '' }: AvatarProps) {
     <span className={`avatar-with-cosmetic ${className}`}>
       <img src={src} alt={alt} />
       {cosmetic && (
-        <i className="avatar-cosmetic" aria-label={`Предмет: ${cosmetic.name}`}>
+        <i className="avatar-cosmetic" aria-label={`Item: ${cosmetic.name}`}>
           {cosmetic.icon}
         </i>
       )}

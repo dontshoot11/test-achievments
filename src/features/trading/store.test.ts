@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useTradingStore } from './store'
 
-describe('жизненный цикл демо-сделки', () => {
+describe('demo simulation lifecycle', () => {
   beforeEach(() => {
     localStorage.clear()
     vi.useFakeTimers()
@@ -9,7 +9,7 @@ describe('жизненный цикл демо-сделки', () => {
     useTradingStore.getState().resetDemo()
   })
 
-  it('резервирует сумму и открывает первую ачивку', () => {
+  it('reserves the amount and unlocks the first achievement', () => {
     useTradingStore.getState().openTrade('up')
     const state = useTradingStore.getState()
 
@@ -19,7 +19,7 @@ describe('жизненный цикл демо-сделки', () => {
     expect(state.score).toBe(60)
   })
 
-  it('закрывает 5-секундную сделку и начисляет userscore один раз', () => {
+  it('completes a 5-second simulation and awards userscore once', () => {
     useTradingStore.getState().openTrade('up')
     vi.advanceTimersByTime(5_100)
     useTradingStore.getState().marketTick()
@@ -35,7 +35,7 @@ describe('жизненный цикл демо-сделки', () => {
     expect(useTradingStore.getState().score).toBe(score)
   })
 
-  it('считает только один заход в день и открывает серию на третий день', () => {
+  it('counts one visit per day and unlocks a streak on day three', () => {
     useTradingStore.getState().registerVisit()
     useTradingStore.getState().registerVisit()
     expect(useTradingStore.getState().progress['three-day-streak']).toBe(1)
@@ -50,7 +50,7 @@ describe('жизненный цикл демо-сделки', () => {
     expect(useTradingStore.getState().unlocked['three-day-streak']).toBeTypeOf('number')
   })
 
-  it('сбрасывает текущую серию после пропущенного дня', () => {
+  it('resets the current streak after a missed day', () => {
     useTradingStore.getState().registerVisit()
     vi.setSystemTime(new Date('2026-07-26T10:00:00Z'))
     useTradingStore.getState().registerVisit()
@@ -59,7 +59,7 @@ describe('жизненный цикл демо-сделки', () => {
     expect(useTradingStore.getState().progress['three-day-streak']).toBe(1)
   })
 
-  it('открывает ачивки за хелп-центр и полный маршрут', () => {
+  it('unlocks achievements for the Help Center and full tour', () => {
     const state = useTradingStore.getState()
     state.openHelpTopic('trading-basics')
     state.openHelpTopic('userscore-guide')
@@ -75,7 +75,7 @@ describe('жизненный цикл демо-сделки', () => {
     expect(completed.unlocked['full-route']).toBeTypeOf('number')
   })
 
-  it('награждает за задание дня и сбрасывает его на следующий день', () => {
+  it('rewards the daily challenge and resets it the next day', () => {
     useTradingStore.setState({
       dailyTask: {
         date: '2026-07-24',
@@ -105,7 +105,7 @@ describe('жизненный цикл демо-сделки', () => {
     expect(nextDay.score).toBe(75)
   })
 
-  it('выдаёт предмет за 5 прибыльных сделок и сохраняет его после смены месяца', () => {
+  it('awards an item after 5 successful simulations and keeps it next month', () => {
     useTradingStore.setState({
       monthlyTask: {
         month: '2026-07',

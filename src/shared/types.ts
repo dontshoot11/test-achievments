@@ -53,7 +53,7 @@ export interface AchievementDefinition {
   title: string
   description: string
   reward: number
-  category: 'Старт' | 'Торговля' | 'Исследование' | 'Мастерство'
+  category: 'Getting started' | 'Activity' | 'Exploration' | 'Mastery'
   target: number
   hidden?: boolean
   icon: string
