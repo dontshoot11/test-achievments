@@ -7,6 +7,7 @@ import {
   CircleDollarSign,
   Clock3,
   CandlestickChart,
+  Dices,
   Eraser,
   Minus,
   Plus,
@@ -44,6 +45,7 @@ function TradeControls() {
   const setAmount = useTradingStore((state) => state.setAmount)
   const setDuration = useTradingStore((state) => state.setDuration)
   const openTrade = useTradingStore((state) => state.openTrade)
+  const openRandomTrade = useTradingStore((state) => state.openRandomTrade)
   const [now, setNow] = useState(Date.now())
 
   useEffect(() => {
@@ -134,6 +136,14 @@ function TradeControls() {
               <ArrowDownRight /> Lower
             </button>
           </div>
+          <button
+            className="lucky-button"
+            disabled={balance < 10}
+            onClick={openRandomTrade}
+            title="Random dataset, amount, duration, and direction"
+          >
+            <Dices size={17} /> I feel lucky
+          </button>
         </>
       )}
       <div className="balance-line">

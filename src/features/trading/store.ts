@@ -57,6 +57,7 @@ interface TradingState {
   setAmount: (amount: number) => void
   setDuration: (duration: TradeDuration) => void
   openTrade: (direction: Direction) => void
+  openRandomTrade: () => void
   marketTick: () => void
   clearLogs: () => void
   clearToast: () => void
@@ -246,7 +247,7 @@ const advanceMonthlyTask = <T extends TradingState>(state: T): T => {
 
 export const useTradingStore = create<TradingState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       ...baseState(),
       selectAsset: (asset) =>
         set((state) => {
@@ -334,6 +335,35 @@ export const useTradingStore = create<TradingState>()(
             ? advanceDailyTask(withAchievements, 'large-trade')
             : withAchievements
         }),
+      openRandomTrade: () => {
+        const state = get()
+        if (state.activeTrade) return
+        const maxAmount = Math.min(500, Math.floor(state.balance / 10) * 10)
+        if (maxAmount < 10) return
+
+        const assetIds = Object.keys(ASSETS) as AssetId[]
+        const assetId = assetIds[Math.floor(Math.random() * assetIds.length)]
+        const durations: TradeDuration[] = [5, 10]
+        const duration = durations[Math.floor(Math.random() * durations.length)]
+        const direction: Direction = Math.random() < 0.5 ? 'up' : 'down'
+        const amount = (Math.floor(Math.random() * (maxAmount / 10)) + 1) * 10
+
+        set((current) => ({
+          logs: appendLog(
+            current.logs,
+            makeLog(
+              'setting',
+              'Lucky pick',
+              `${ASSETS[assetId].symbol} · $${amount} · ${duration}s · ${direction === 'up' ? 'Higher' : 'Lower'}`,
+            ),
+          ),
+        }))
+
+        state.selectAsset(assetId)
+        state.setAmount(amount)
+        state.setDuration(duration)
+        state.openTrade(direction)
+      },
       marketTick: () =>
         set((state) => {
           const histories = { ...state.histories }

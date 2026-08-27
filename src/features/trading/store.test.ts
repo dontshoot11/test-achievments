@@ -19,6 +19,24 @@ describe('demo simulation lifecycle', () => {
     expect(state.score).toBe(60)
   })
 
+  it('opens a random simulation from the lucky button', () => {
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0.99)
+    useTradingStore.getState().openRandomTrade()
+    const state = useTradingStore.getState()
+
+    expect(state.activeTrade).not.toBeNull()
+    expect(state.activeTrade!.assetId).toBe('ETHUSD')
+    expect(state.activeTrade!.duration).toBe(10)
+    expect(state.activeTrade!.direction).toBe('down')
+    expect(state.activeTrade!.amount).toBe(500)
+    expect(state.balance).toBe(9_500)
+    expect(state.logs.some((log) => log.title === 'Lucky pick')).toBe(true)
+
+    useTradingStore.getState().openRandomTrade()
+    expect(useTradingStore.getState().activeTrade).toBe(state.activeTrade)
+    random.mockRestore()
+  })
+
   it('unlocks the onboarding achievement only once', () => {
     useTradingStore.getState().completeOnboarding()
 
