@@ -1,3 +1,9 @@
+/**
+ * Workspace screen: dataset switcher with the live chart, simulation controls
+ * (including the random "I feel lucky" run), simulation history, and activity log.
+ *
+ * Rendered by the `/` route; all state comes from `useTradingStore`.
+ */
 import { useEffect, useMemo, useState } from 'react'
 import {
   ArrowDownRight,

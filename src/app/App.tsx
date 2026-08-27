@@ -1,3 +1,9 @@
+/**
+ * Application shell: navigation, routing, demo-wide controls (boost, reset),
+ * the market tick loop, and the onboarding tour.
+ *
+ * Mounted once from `main.tsx`.
+ */
 import { useEffect } from 'react'
 import { Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'

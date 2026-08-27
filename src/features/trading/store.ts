@@ -1,3 +1,10 @@
+/**
+ * Central demo store: datasets, simulations, balance, userscore, achievements,
+ * challenges, and the activity log, persisted to localStorage.
+ *
+ * Read it with `useTradingStore(selector)` and mutate only through its actions —
+ * they keep logs, achievements, and challenge progress in sync.
+ */
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import {

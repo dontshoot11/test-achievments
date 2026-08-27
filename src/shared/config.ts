@@ -1,3 +1,10 @@
+/**
+ * Static demo configuration: datasets, profile levels, achievement catalog,
+ * cosmetics, and the daily/monthly challenge definitions.
+ *
+ * Import the constants directly; use `getLevel`, `getDailyTask`, and
+ * `getMonthlyCosmetic` to resolve the current level, daily task, and monthly reward.
+ */
 import type {
   AchievementDefinition,
   Asset,

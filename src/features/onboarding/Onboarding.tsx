@@ -1,3 +1,9 @@
+/**
+ * Rewarded getting-started tour shown until `onboardingCompleted` is set.
+ *
+ * Mounted once by `App`; finishing it calls `completeOnboarding()` and unlocks
+ * the `welcome-aboard` achievement.
+ */
 import { useEffect, useRef, useState, type ComponentType } from 'react'
 import {
   ArrowRight,
