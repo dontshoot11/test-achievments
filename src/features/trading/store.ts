@@ -38,6 +38,7 @@ interface TradingState {
   histories: Record<AssetId, Tick[]>
   seeds: Record<AssetId, number>
   activeTrade: Trade | null
+  randomTradeDraft: Pick<Trade, 'amount' | 'duration' | 'direction'> | null
   lastResult: Trade | null
   trades: Trade[]
   logs: LogEvent[]
@@ -65,7 +66,10 @@ interface TradingState {
   setAmount: (amount: number) => void
   setDuration: (duration: TradeDuration) => void
   openTrade: (direction: Direction) => void
-  openRandomTrade: () => void
+  prepareRandomTrade: () => void
+  confirmRandomTrade: () => void
+  updateRandomTradeDraft: (draft: Partial<Pick<Trade, 'amount' | 'duration' | 'direction'>>) => void
+  dismissRandomTrade: () => void
   dismissTradeResult: () => void
   marketTick: () => void
   clearLogs: () => void
@@ -108,6 +112,7 @@ const baseState = () => ({
   histories: initialHistories(),
   seeds: { BTCUSD: 72_941, ETHUSD: 31_337 },
   activeTrade: null,
+  randomTradeDraft: null as Pick<Trade, 'amount' | 'duration' | 'direction'> | null,
   lastResult: null as Trade | null,
   trades: [] as Trade[],
   logs: [
@@ -345,35 +350,42 @@ export const useTradingStore = create<TradingState>()(
             ? advanceDailyTask(withAchievements, 'large-trade')
             : withAchievements
         }),
-      openRandomTrade: () => {
+      prepareRandomTrade: () => {
         const state = get()
-        if (state.activeTrade) return
+        if (state.activeTrade || state.randomTradeDraft) return
         const maxAmount = Math.min(500, Math.floor(state.balance / 10) * 10)
         if (maxAmount < 10) return
 
-        const assetIds = Object.keys(ASSETS) as AssetId[]
-        const assetId = assetIds[Math.floor(Math.random() * assetIds.length)]
         const durations: TradeDuration[] = [5, 10]
         const duration = durations[Math.floor(Math.random() * durations.length)]
         const direction: Direction = Math.random() < 0.5 ? 'up' : 'down'
         const amount = (Math.floor(Math.random() * (maxAmount / 10)) + 1) * 10
 
-        set((current) => ({
+        set({ randomTradeDraft: { amount, duration, direction } })
+      },
+      confirmRandomTrade: () => {
+        const draft = get().randomTradeDraft
+        if (!draft || get().activeTrade) return
+        set((state) => ({
+          amount: draft.amount,
+          duration: draft.duration,
+          randomTradeDraft: null,
           logs: appendLog(
-            current.logs,
+            state.logs,
             makeLog(
               'setting',
               'Lucky pick',
-              `${ASSETS[assetId].symbol} · $${amount} · ${duration}s · ${direction === 'up' ? 'Higher' : 'Lower'}`,
+              `${ASSETS[state.selectedAsset].symbol} · $${draft.amount} · ${draft.duration}s · ${draft.direction === 'up' ? 'Higher' : 'Lower'}`,
             ),
           ),
         }))
-
-        state.selectAsset(assetId)
-        state.setAmount(amount)
-        state.setDuration(duration)
-        state.openTrade(direction)
+        get().openTrade(draft.direction)
       },
+      updateRandomTradeDraft: (draft) =>
+        set((state) => state.randomTradeDraft
+          ? { randomTradeDraft: { ...state.randomTradeDraft, ...draft } }
+          : state),
+      dismissRandomTrade: () => set({ randomTradeDraft: null }),
       marketTick: () =>
         set((state) => {
           const histories = { ...state.histories }

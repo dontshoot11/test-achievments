@@ -21,6 +21,7 @@ import { AchievementsPage } from '../features/achievements/AchievementsPage'
 import { HelpPage } from '../features/help/HelpPage'
 import { Onboarding } from '../features/onboarding/Onboarding'
 import { TradePage } from '../features/trading/TradePage'
+import { LuckyTradeModal } from '../features/trading/LuckyTradeModal'
 import { TradeResultModal } from '../features/trading/TradeResultModal'
 import { useTradingStore } from '../features/trading/store'
 import { ACHIEVEMENTS, getLevel, getNextLevel } from '../shared/config'
@@ -143,6 +144,7 @@ export function App() {
         </main>
       </div>
       <Onboarding />
+      <LuckyTradeModal />
       <TradeResultModal />
       <Toast />
     </div>
