@@ -1,3 +1,7 @@
+/**
+ * Live candlestick chart for dataset ticks and the active simulation entry line.
+ * Render with a tick history and the selected asset's active trade, if any.
+ */
 import { useEffect, useRef } from 'react'
 import {
   CandlestickSeries,
