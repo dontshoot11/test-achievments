@@ -37,6 +37,39 @@ describe('demo simulation lifecycle', () => {
     random.mockRestore()
   })
 
+  it('picks the first dataset, five seconds, and Higher on a low random roll', () => {
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0.1)
+    useTradingStore.getState().openRandomTrade()
+    const trade = useTradingStore.getState().activeTrade!
+
+    expect(trade.assetId).toBe('BTCUSD')
+    expect(trade.duration).toBe(5)
+    expect(trade.direction).toBe('up')
+    expect(trade.amount).toBe(60)
+    random.mockRestore()
+  })
+
+  it('caps the random amount at the available balance', () => {
+    useTradingStore.setState({ balance: 30 })
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0.99)
+    useTradingStore.getState().openRandomTrade()
+    const state = useTradingStore.getState()
+
+    expect(state.activeTrade!.amount).toBe(30)
+    expect(state.balance).toBe(0)
+    random.mockRestore()
+  })
+
+  it('does not open a random simulation when the balance is below the minimum', () => {
+    useTradingStore.setState({ balance: 5 })
+    useTradingStore.getState().openRandomTrade()
+    const state = useTradingStore.getState()
+
+    expect(state.activeTrade).toBeNull()
+    expect(state.balance).toBe(5)
+    expect(state.logs.some((log) => log.title === 'Lucky pick')).toBe(false)
+  })
+
   it('unlocks the onboarding achievement only once', () => {
     useTradingStore.getState().completeOnboarding()
 
