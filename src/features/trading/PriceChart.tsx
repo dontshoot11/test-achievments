@@ -70,6 +70,9 @@ export function PriceChart({ ticks, activeTrade }: PriceChartProps) {
         }
       }),
     )
+    // The rolling window is a fixed size, so refit on every update: with the
+    // default bar spacing the candles would only cover part of a wide container.
+    chartRef.current?.timeScale().fitContent()
   }, [ticks])
 
   useEffect(() => {
