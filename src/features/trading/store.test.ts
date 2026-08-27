@@ -99,6 +99,29 @@ describe('demo simulation lifecycle', () => {
     expect(useTradingStore.getState().score).toBe(score)
   })
 
+  it('publishes the finished simulation as the result popup payload', () => {
+    useTradingStore.getState().openTrade('up')
+    expect(useTradingStore.getState().lastResult).toBeNull()
+
+    vi.advanceTimersByTime(5_100)
+    useTradingStore.getState().marketTick()
+    const state = useTradingStore.getState()
+
+    expect(state.lastResult).not.toBeNull()
+    expect(state.lastResult!.id).toBe(state.trades[0].id)
+    expect(state.lastResult!.closePrice).toBeTypeOf('number')
+    expect(state.lastResult!.result).toBe(state.trades[0].result)
+  })
+
+  it('clears the result popup payload when it is dismissed', () => {
+    useTradingStore.getState().openTrade('up')
+    vi.advanceTimersByTime(5_100)
+    useTradingStore.getState().marketTick()
+    useTradingStore.getState().dismissTradeResult()
+
+    expect(useTradingStore.getState().lastResult).toBeNull()
+  })
+
   it('counts one visit per day and unlocks a streak on day three', () => {
     useTradingStore.getState().registerVisit()
     useTradingStore.getState().registerVisit()

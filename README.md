@@ -31,14 +31,15 @@ npm run build
 4. Select Higher or Lower and watch the countdown.
 5. Or select `I feel lucky` to start a simulation with a random dataset, amount, duration, and direction.
 6. Follow the event sequence in the live activity log.
-7. When the simulation finishes, achievements unlock and userscore is awarded.
-8. Open Achievements to review progress and the updated avatar.
-9. Open the Help Center, explore all three topics, and complete the guide.
-10. Return on the next two calendar days to unlock a `3/3` visit streak.
-11. Complete the random daily challenge on the Achievements screen.
-12. Complete 5 successful simulations in a month to unlock the collectible item.
-13. Select `Demo boost` to preview the maximum level.
-14. Select `Reset demo` to restart the experience.
+7. When the simulation finishes, a result popup shows the outcome, prices, and payout.
+8. Achievements unlock and userscore is awarded.
+9. Open Achievements to review progress and the updated avatar.
+10. Open the Help Center, explore all three topics, and complete the guide.
+11. Return on the next two calendar days to unlock a `3/3` visit streak.
+12. Complete the random daily challenge on the Achievements screen.
+13. Complete 5 successful simulations in a month to unlock the collectible item.
+14. Select `Demo boost` to preview the maximum level.
+15. Select `Reset demo` to restart the experience.
 
 ## Architecture
 

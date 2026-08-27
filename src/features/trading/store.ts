@@ -38,6 +38,7 @@ interface TradingState {
   histories: Record<AssetId, Tick[]>
   seeds: Record<AssetId, number>
   activeTrade: Trade | null
+  lastResult: Trade | null
   trades: Trade[]
   logs: LogEvent[]
   unlocked: Record<string, number>
@@ -65,6 +66,7 @@ interface TradingState {
   setDuration: (duration: TradeDuration) => void
   openTrade: (direction: Direction) => void
   openRandomTrade: () => void
+  dismissTradeResult: () => void
   marketTick: () => void
   clearLogs: () => void
   clearToast: () => void
@@ -106,6 +108,7 @@ const baseState = () => ({
   histories: initialHistories(),
   seeds: { BTCUSD: 72_941, ETHUSD: 31_337 },
   activeTrade: null,
+  lastResult: null as Trade | null,
   trades: [] as Trade[],
   logs: [
     makeLog(
@@ -433,6 +436,7 @@ export const useTradingStore = create<TradingState>()(
                 seeds,
                 logs,
                 activeTrade: null,
+                lastResult: completed,
                 trades,
                 balance: state.balance + payout,
                 winStreak,
@@ -447,6 +451,7 @@ export const useTradingStore = create<TradingState>()(
           }
           return { histories, seeds, logs }
         }),
+      dismissTradeResult: () => set({ lastResult: null }),
       clearLogs: () =>
         set({ logs: [makeLog('system', 'Log cleared', 'New events will appear here')] }),
       clearToast: () => set({ toast: null }),
