@@ -1,5 +1,5 @@
 /**
- * Result popup for a finished simulation: outcome, prices, amount, and payout.
+ * Result popup for a finished simulation with an optional random-trade retry.
  *
  * Mounted once by `App`; it appears whenever the store holds a `lastResult`
  * and closes through `dismissTradeResult()` (button, Escape, or backdrop).
@@ -9,6 +9,7 @@ import {
   ArrowDownRight,
   ArrowUpRight,
   Minus,
+  RotateCw,
   TrendingDown,
   Trophy,
 } from 'lucide-react'
@@ -30,6 +31,7 @@ const RESULT_COPY = {
 export function TradeResultModal() {
   const lastResult = useTradingStore((state) => state.lastResult)
   const dismissTradeResult = useTradingStore((state) => state.dismissTradeResult)
+  const retryRandomTrade = useTradingStore((state) => state.retryRandomTrade)
   const dialogRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -96,7 +98,12 @@ export function TradeResultModal() {
           </div>
         </dl>
 
-        <button className="result-close" onClick={dismissTradeResult}>Continue</button>
+        <div className="result-actions">
+          {lastResult.randomized && (
+            <button className="result-retry" onClick={retryRandomTrade}><RotateCw />Попробовать еще раз</button>
+          )}
+          <button className="result-close" onClick={dismissTradeResult}>Continue</button>
+        </div>
       </div>
     </div>
   )

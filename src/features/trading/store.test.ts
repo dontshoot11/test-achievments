@@ -68,7 +68,13 @@ describe('demo simulation lifecycle', () => {
     const state = useTradingStore.getState()
 
     expect(state.randomTradeDraft).toBeNull()
-    expect(state.activeTrade).toMatchObject({ amount: 250, duration: 10, direction: 'down', assetId: 'BTCUSD' })
+    expect(state.activeTrade).toMatchObject({
+      amount: 250,
+      duration: 10,
+      direction: 'down',
+      assetId: 'BTCUSD',
+      randomized: true,
+    })
     expect(state.balance).toBe(9_750)
     expect(state.logs.some((log) => log.title === 'Lucky pick')).toBe(true)
   })

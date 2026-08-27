@@ -17,6 +17,7 @@ export interface Asset {
   decimals: number
 }
 
+/** Simulation snapshot used for active, completed, and persisted trade state. */
 export interface Trade {
   id: string
   assetId: AssetId
@@ -29,6 +30,7 @@ export interface Trade {
   expiresAt: number
   result?: TradeResult
   payout?: number
+  randomized?: boolean
 }
 
 export type EventType =
