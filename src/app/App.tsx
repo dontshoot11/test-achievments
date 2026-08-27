@@ -1,3 +1,9 @@
+/**
+ * Application shell: navigation, routing, demo-wide controls (boost, reset),
+ * the market tick loop, and the onboarding tour.
+ *
+ * Mounted once from `main.tsx`.
+ */
 import { useEffect } from 'react'
 import { Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
@@ -15,6 +21,7 @@ import { AchievementsPage } from '../features/achievements/AchievementsPage'
 import { HelpPage } from '../features/help/HelpPage'
 import { Onboarding } from '../features/onboarding/Onboarding'
 import { TradePage } from '../features/trading/TradePage'
+import { TradeResultModal } from '../features/trading/TradeResultModal'
 import { useTradingStore } from '../features/trading/store'
 import { ACHIEVEMENTS, getLevel, getNextLevel } from '../shared/config'
 import { Avatar } from '../shared/Avatar'
@@ -136,6 +143,7 @@ export function App() {
         </main>
       </div>
       <Onboarding />
+      <TradeResultModal />
       <Toast />
     </div>
   )

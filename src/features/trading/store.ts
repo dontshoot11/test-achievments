@@ -1,3 +1,10 @@
+/**
+ * Central demo store: datasets, simulations, balance, userscore, achievements,
+ * challenges, and the activity log, persisted to localStorage.
+ *
+ * Read it with `useTradingStore(selector)` and mutate only through its actions —
+ * they keep logs, achievements, and challenge progress in sync.
+ */
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import {
@@ -31,6 +38,7 @@ interface TradingState {
   histories: Record<AssetId, Tick[]>
   seeds: Record<AssetId, number>
   activeTrade: Trade | null
+  lastResult: Trade | null
   trades: Trade[]
   logs: LogEvent[]
   unlocked: Record<string, number>
@@ -57,6 +65,8 @@ interface TradingState {
   setAmount: (amount: number) => void
   setDuration: (duration: TradeDuration) => void
   openTrade: (direction: Direction) => void
+  openRandomTrade: () => void
+  dismissTradeResult: () => void
   marketTick: () => void
   clearLogs: () => void
   clearToast: () => void
@@ -98,6 +108,7 @@ const baseState = () => ({
   histories: initialHistories(),
   seeds: { BTCUSD: 72_941, ETHUSD: 31_337 },
   activeTrade: null,
+  lastResult: null as Trade | null,
   trades: [] as Trade[],
   logs: [
     makeLog(
@@ -246,7 +257,7 @@ const advanceMonthlyTask = <T extends TradingState>(state: T): T => {
 
 export const useTradingStore = create<TradingState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       ...baseState(),
       selectAsset: (asset) =>
         set((state) => {
@@ -334,6 +345,35 @@ export const useTradingStore = create<TradingState>()(
             ? advanceDailyTask(withAchievements, 'large-trade')
             : withAchievements
         }),
+      openRandomTrade: () => {
+        const state = get()
+        if (state.activeTrade) return
+        const maxAmount = Math.min(500, Math.floor(state.balance / 10) * 10)
+        if (maxAmount < 10) return
+
+        const assetIds = Object.keys(ASSETS) as AssetId[]
+        const assetId = assetIds[Math.floor(Math.random() * assetIds.length)]
+        const durations: TradeDuration[] = [5, 10]
+        const duration = durations[Math.floor(Math.random() * durations.length)]
+        const direction: Direction = Math.random() < 0.5 ? 'up' : 'down'
+        const amount = (Math.floor(Math.random() * (maxAmount / 10)) + 1) * 10
+
+        set((current) => ({
+          logs: appendLog(
+            current.logs,
+            makeLog(
+              'setting',
+              'Lucky pick',
+              `${ASSETS[assetId].symbol} · $${amount} · ${duration}s · ${direction === 'up' ? 'Higher' : 'Lower'}`,
+            ),
+          ),
+        }))
+
+        state.selectAsset(assetId)
+        state.setAmount(amount)
+        state.setDuration(duration)
+        state.openTrade(direction)
+      },
       marketTick: () =>
         set((state) => {
           const histories = { ...state.histories }
@@ -396,6 +436,7 @@ export const useTradingStore = create<TradingState>()(
                 seeds,
                 logs,
                 activeTrade: null,
+                lastResult: completed,
                 trades,
                 balance: state.balance + payout,
                 winStreak,
@@ -410,6 +451,7 @@ export const useTradingStore = create<TradingState>()(
           }
           return { histories, seeds, logs }
         }),
+      dismissTradeResult: () => set({ lastResult: null }),
       clearLogs: () =>
         set({ logs: [makeLog('system', 'Log cleared', 'New events will appear here')] }),
       clearToast: () => set({ toast: null }),

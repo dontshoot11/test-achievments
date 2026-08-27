@@ -19,6 +19,57 @@ describe('demo simulation lifecycle', () => {
     expect(state.score).toBe(60)
   })
 
+  it('opens a random simulation from the lucky button', () => {
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0.99)
+    useTradingStore.getState().openRandomTrade()
+    const state = useTradingStore.getState()
+
+    expect(state.activeTrade).not.toBeNull()
+    expect(state.activeTrade!.assetId).toBe('ETHUSD')
+    expect(state.activeTrade!.duration).toBe(10)
+    expect(state.activeTrade!.direction).toBe('down')
+    expect(state.activeTrade!.amount).toBe(500)
+    expect(state.balance).toBe(9_500)
+    expect(state.logs.some((log) => log.title === 'Lucky pick')).toBe(true)
+
+    useTradingStore.getState().openRandomTrade()
+    expect(useTradingStore.getState().activeTrade).toBe(state.activeTrade)
+    random.mockRestore()
+  })
+
+  it('picks the first dataset, five seconds, and Higher on a low random roll', () => {
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0.1)
+    useTradingStore.getState().openRandomTrade()
+    const trade = useTradingStore.getState().activeTrade!
+
+    expect(trade.assetId).toBe('BTCUSD')
+    expect(trade.duration).toBe(5)
+    expect(trade.direction).toBe('up')
+    expect(trade.amount).toBe(60)
+    random.mockRestore()
+  })
+
+  it('caps the random amount at the available balance', () => {
+    useTradingStore.setState({ balance: 30 })
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0.99)
+    useTradingStore.getState().openRandomTrade()
+    const state = useTradingStore.getState()
+
+    expect(state.activeTrade!.amount).toBe(30)
+    expect(state.balance).toBe(0)
+    random.mockRestore()
+  })
+
+  it('does not open a random simulation when the balance is below the minimum', () => {
+    useTradingStore.setState({ balance: 5 })
+    useTradingStore.getState().openRandomTrade()
+    const state = useTradingStore.getState()
+
+    expect(state.activeTrade).toBeNull()
+    expect(state.balance).toBe(5)
+    expect(state.logs.some((log) => log.title === 'Lucky pick')).toBe(false)
+  })
+
   it('unlocks the onboarding achievement only once', () => {
     useTradingStore.getState().completeOnboarding()
 
@@ -46,6 +97,29 @@ describe('demo simulation lifecycle', () => {
     const score = completed.score
     useTradingStore.getState().marketTick()
     expect(useTradingStore.getState().score).toBe(score)
+  })
+
+  it('publishes the finished simulation as the result popup payload', () => {
+    useTradingStore.getState().openTrade('up')
+    expect(useTradingStore.getState().lastResult).toBeNull()
+
+    vi.advanceTimersByTime(5_100)
+    useTradingStore.getState().marketTick()
+    const state = useTradingStore.getState()
+
+    expect(state.lastResult).not.toBeNull()
+    expect(state.lastResult!.id).toBe(state.trades[0].id)
+    expect(state.lastResult!.closePrice).toBeTypeOf('number')
+    expect(state.lastResult!.result).toBe(state.trades[0].result)
+  })
+
+  it('clears the result popup payload when it is dismissed', () => {
+    useTradingStore.getState().openTrade('up')
+    vi.advanceTimersByTime(5_100)
+    useTradingStore.getState().marketTick()
+    useTradingStore.getState().dismissTradeResult()
+
+    expect(useTradingStore.getState().lastResult).toBeNull()
   })
 
   it('counts one visit per day and unlocks a streak on day three', () => {
