@@ -1,18 +1,21 @@
 /**
- * Slot-machine preview for a generated trade; mount once and confirm with “Открыть”.
+ * Slot-machine preview for generating, rerolling, editing, and confirming a random trade.
+ * Mount once alongside the trading routes; visibility is controlled by the store draft.
  */
 import { useEffect, useRef, useState } from 'react'
-import { ArrowDownRight, ArrowUpRight, Clock3, Coins, Dices, X } from 'lucide-react'
+import { ArrowDownRight, ArrowUpRight, Clock3, Coins, Dices, RotateCw, X } from 'lucide-react'
 import { useTradingStore } from './store'
 
 export function LuckyTradeModal() {
   const draft = useTradingStore((state) => state.randomTradeDraft)
   const confirm = useTradingStore((state) => state.confirmRandomTrade)
   const updateDraft = useTradingStore((state) => state.updateRandomTradeDraft)
+  const reroll = useTradingStore((state) => state.rerollRandomTrade)
   const dismiss = useTradingStore((state) => state.dismissRandomTrade)
   const dialogRef = useRef<HTMLDivElement>(null)
   const [spinning, setSpinning] = useState(true)
   const [editing, setEditing] = useState(false)
+  const [spinCycle, setSpinCycle] = useState(0)
   const isOpen = Boolean(draft)
 
   useEffect(() => {
@@ -29,7 +32,12 @@ export function LuckyTradeModal() {
       window.clearTimeout(spinTimer)
       window.removeEventListener('keydown', onKeyDown)
     }
-  }, [isOpen, dismiss])
+  }, [isOpen, dismiss, spinCycle])
+
+  const handleReroll = () => {
+    reroll()
+    setSpinCycle((value) => value + 1)
+  }
 
   if (!draft) return null
 
@@ -64,6 +72,7 @@ export function LuckyTradeModal() {
         </div>
         <div className="lucky-actions">
           <button className="lucky-edit" onClick={() => setEditing((value) => !value)} disabled={spinning}>{editing ? 'Готово' : 'Редактировать'}</button>
+          <button className="lucky-reroll" onClick={handleReroll} disabled={spinning}><RotateCw />Еще раз</button>
           <button className="lucky-open" onClick={confirm} disabled={spinning}>
             {spinning ? 'Крутятся…' : 'Открыть'}
           </button>

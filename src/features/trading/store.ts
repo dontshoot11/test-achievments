@@ -65,12 +65,14 @@ interface TradingState {
   selectAsset: (asset: AssetId) => void
   setAmount: (amount: number) => void
   setDuration: (duration: TradeDuration) => void
-  openTrade: (direction: Direction) => void
+  openTrade: (direction: Direction, randomized?: boolean) => void
   prepareRandomTrade: () => void
+  rerollRandomTrade: () => void
   confirmRandomTrade: () => void
   updateRandomTradeDraft: (draft: Partial<Pick<Trade, 'amount' | 'duration' | 'direction'>>) => void
   dismissRandomTrade: () => void
   dismissTradeResult: () => void
+  retryRandomTrade: () => void
   marketTick: () => void
   clearLogs: () => void
   clearToast: () => void
@@ -299,7 +301,7 @@ export const useTradingStore = create<TradingState>()(
             makeLog('setting', 'Duration changed', `${state.duration}s → ${duration}s`),
           ),
         })),
-      openTrade: (direction) =>
+      openTrade: (direction, randomized = false) =>
         set((state) => {
           if (state.activeTrade || state.amount > state.balance || state.amount < 10) return state
           const history = state.histories[state.selectedAsset]
@@ -314,6 +316,7 @@ export const useTradingStore = create<TradingState>()(
             openPrice: price,
             openedAt: now,
             expiresAt: now + state.duration * 1000,
+            randomized,
           }
           const tradedAssets = Array.from(new Set([...state.tradedAssets, state.selectedAsset]))
           const progress = {
@@ -363,6 +366,19 @@ export const useTradingStore = create<TradingState>()(
 
         set({ randomTradeDraft: { amount, duration, direction } })
       },
+      rerollRandomTrade: () => {
+        const state = get()
+        if (state.activeTrade || !state.randomTradeDraft) return
+        const maxAmount = Math.min(500, Math.floor(state.balance / 10) * 10)
+        if (maxAmount < 10) return
+
+        const durations: TradeDuration[] = [5, 10]
+        const duration = durations[Math.floor(Math.random() * durations.length)]
+        const direction: Direction = Math.random() < 0.5 ? 'up' : 'down'
+        const amount = (Math.floor(Math.random() * (maxAmount / 10)) + 1) * 10
+
+        set({ randomTradeDraft: { amount, duration, direction } })
+      },
       confirmRandomTrade: () => {
         const draft = get().randomTradeDraft
         if (!draft || get().activeTrade) return
@@ -379,7 +395,7 @@ export const useTradingStore = create<TradingState>()(
             ),
           ),
         }))
-        get().openTrade(draft.direction)
+        get().openTrade(draft.direction, true)
       },
       updateRandomTradeDraft: (draft) =>
         set((state) => state.randomTradeDraft
@@ -464,6 +480,11 @@ export const useTradingStore = create<TradingState>()(
           return { histories, seeds, logs }
         }),
       dismissTradeResult: () => set({ lastResult: null }),
+      retryRandomTrade: () => {
+        if (!get().lastResult?.randomized) return
+        set({ lastResult: null })
+        get().prepareRandomTrade()
+      },
       clearLogs: () =>
         set({ logs: [makeLog('system', 'Log cleared', 'New events will appear here')] }),
       clearToast: () => set({ toast: null }),

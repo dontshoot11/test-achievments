@@ -64,4 +64,17 @@ describe('lucky trade popup', () => {
     expect(state.randomTradeDraft).toEqual({ amount: 320, duration: 5, direction: 'down' })
     expect(state.activeTrade).toBeNull()
   })
+
+  it('generates new settings and spins the reels again', () => {
+    useTradingStore.setState({ randomTradeDraft: { duration: 5, amount: 100, direction: 'up' } })
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0.99)
+    render(<LuckyTradeModal />)
+    finishSpin()
+
+    fireEvent.click(screen.getByRole('button', { name: /Еще раз/ }))
+
+    expect(useTradingStore.getState().randomTradeDraft).toEqual({ duration: 10, amount: 500, direction: 'down' })
+    expect(screen.getByRole('button', { name: 'Крутятся…' })).toBeDisabled()
+    random.mockRestore()
+  })
 })

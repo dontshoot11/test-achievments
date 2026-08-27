@@ -52,4 +52,22 @@ describe('trade result popup', () => {
     expect(useTradingStore.getState().lastResult).toBeNull()
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
+
+  it('offers another random pick only after a randomized simulation', () => {
+    useTradingStore.setState({ lastResult: { ...finishedTrade, randomized: true } })
+    render(<TradeResultModal />)
+
+    fireEvent.click(screen.getByRole('button', { name: /Попробовать еще раз/ }))
+
+    expect(useTradingStore.getState().lastResult).toBeNull()
+    expect(useTradingStore.getState().randomTradeDraft).not.toBeNull()
+    expect(screen.queryByRole('button', { name: /Попробовать еще раз/ })).not.toBeInTheDocument()
+  })
+
+  it('does not offer another random pick after a manually opened simulation', () => {
+    useTradingStore.setState({ lastResult: finishedTrade })
+    render(<TradeResultModal />)
+
+    expect(screen.queryByRole('button', { name: /Попробовать еще раз/ })).not.toBeInTheDocument()
+  })
 })
