@@ -19,55 +19,75 @@ describe('demo simulation lifecycle', () => {
     expect(state.score).toBe(60)
   })
 
-  it('opens a random simulation from the lucky button', () => {
+  it('prepares a random simulation without opening it', () => {
     const random = vi.spyOn(Math, 'random').mockReturnValue(0.99)
-    useTradingStore.getState().openRandomTrade()
+    useTradingStore.getState().prepareRandomTrade()
     const state = useTradingStore.getState()
 
-    expect(state.activeTrade).not.toBeNull()
-    expect(state.activeTrade!.assetId).toBe('ETHUSD')
-    expect(state.activeTrade!.duration).toBe(10)
-    expect(state.activeTrade!.direction).toBe('down')
-    expect(state.activeTrade!.amount).toBe(500)
-    expect(state.balance).toBe(9_500)
-    expect(state.logs.some((log) => log.title === 'Lucky pick')).toBe(true)
-
-    useTradingStore.getState().openRandomTrade()
-    expect(useTradingStore.getState().activeTrade).toBe(state.activeTrade)
+    expect(state.randomTradeDraft).toEqual({ duration: 10, direction: 'down', amount: 500 })
+    expect(state.activeTrade).toBeNull()
+    expect(state.balance).toBe(10_000)
     random.mockRestore()
   })
 
-  it('picks the first dataset, five seconds, and Higher on a low random roll', () => {
+  it('picks five seconds, Higher, and a low amount on a low random roll', () => {
     const random = vi.spyOn(Math, 'random').mockReturnValue(0.1)
-    useTradingStore.getState().openRandomTrade()
-    const trade = useTradingStore.getState().activeTrade!
+    useTradingStore.getState().prepareRandomTrade()
+    const draft = useTradingStore.getState().randomTradeDraft!
 
-    expect(trade.assetId).toBe('BTCUSD')
-    expect(trade.duration).toBe(5)
-    expect(trade.direction).toBe('up')
-    expect(trade.amount).toBe(60)
+    expect(draft.duration).toBe(5)
+    expect(draft.direction).toBe('up')
+    expect(draft.amount).toBe(60)
     random.mockRestore()
   })
 
   it('caps the random amount at the available balance', () => {
     useTradingStore.setState({ balance: 30 })
     const random = vi.spyOn(Math, 'random').mockReturnValue(0.99)
-    useTradingStore.getState().openRandomTrade()
+    useTradingStore.getState().prepareRandomTrade()
     const state = useTradingStore.getState()
 
-    expect(state.activeTrade!.amount).toBe(30)
-    expect(state.balance).toBe(0)
+    expect(state.randomTradeDraft!.amount).toBe(30)
+    expect(state.balance).toBe(30)
     random.mockRestore()
   })
 
   it('does not open a random simulation when the balance is below the minimum', () => {
     useTradingStore.setState({ balance: 5 })
-    useTradingStore.getState().openRandomTrade()
+    useTradingStore.getState().prepareRandomTrade()
     const state = useTradingStore.getState()
 
     expect(state.activeTrade).toBeNull()
     expect(state.balance).toBe(5)
-    expect(state.logs.some((log) => log.title === 'Lucky pick')).toBe(false)
+    expect(state.randomTradeDraft).toBeNull()
+  })
+
+  it('opens the prepared simulation only after confirmation', () => {
+    useTradingStore.setState({ randomTradeDraft: { amount: 250, duration: 10, direction: 'down' } })
+    useTradingStore.getState().confirmRandomTrade()
+    const state = useTradingStore.getState()
+
+    expect(state.randomTradeDraft).toBeNull()
+    expect(state.activeTrade).toMatchObject({ amount: 250, duration: 10, direction: 'down', assetId: 'BTCUSD' })
+    expect(state.balance).toBe(9_750)
+    expect(state.logs.some((log) => log.title === 'Lucky pick')).toBe(true)
+  })
+
+  it('dismisses the prepared simulation without changing the balance', () => {
+    useTradingStore.setState({ randomTradeDraft: { amount: 250, duration: 10, direction: 'down' } })
+    useTradingStore.getState().dismissRandomTrade()
+    expect(useTradingStore.getState().randomTradeDraft).toBeNull()
+    expect(useTradingStore.getState().balance).toBe(10_000)
+  })
+
+  it('updates a prepared simulation before confirmation', () => {
+    useTradingStore.setState({ randomTradeDraft: { amount: 230, duration: 10, direction: 'up' } })
+    useTradingStore.getState().updateRandomTradeDraft({ amount: 320, direction: 'down' })
+    const state = useTradingStore.getState()
+
+    expect(state.randomTradeDraft).toEqual({ amount: 320, duration: 10, direction: 'down' })
+    expect(state.activeTrade).toBeNull()
+    expect(state.balance).toBe(10_000)
   })
 
   it('unlocks the onboarding achievement only once', () => {

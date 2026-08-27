@@ -157,6 +157,43 @@ main { padding: 22px 26px 36px; max-width: 1600px; margin: 0 auto; }
 .lucky-button:hover:not(:disabled) { transform: translateY(-2px); background: rgba(255,210,63,.14); }
 .lucky-button:disabled { opacity: .35; cursor: not-allowed; }
 
+.lucky-backdrop { position: fixed; inset: 0; z-index: 95; display: grid; place-items: center; padding: 20px; background: rgba(4,5,5,.82); backdrop-filter: blur(11px); animation: onboarding-fade .2s ease; }
+.lucky-modal { width: min(620px, 100%); position: relative; overflow: hidden; padding: 28px; text-align: center; border: 1px solid rgba(255,210,63,.28); border-radius: 24px; outline: 0; color: #f4f7f6; background: radial-gradient(circle at 50% 0, rgba(255,210,63,.18), transparent 38%), #151616; box-shadow: 0 35px 100px rgba(0,0,0,.68), inset 0 0 0 4px rgba(255,255,255,.025); animation: onboarding-rise .3s cubic-bezier(.2,.8,.2,1); }
+.lucky-modal::before { content: ''; position: absolute; inset: 9px; pointer-events: none; border: 1px dashed rgba(255,210,63,.16); border-radius: 17px; }
+.lucky-dismiss { position: absolute; z-index: 2; top: 17px; right: 17px; width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.08); border-radius: 50%; color: #8c9695; background: #202121; cursor: pointer; }
+.lucky-dismiss svg { width: 15px; }
+.lucky-marquee { display: inline-flex; align-items: center; gap: 9px; padding: 8px 14px; border: 1px solid rgba(255,210,63,.25); border-radius: 99px; color: var(--accent); background: rgba(255,210,63,.08); font-size: 9px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+.lucky-marquee svg { width: 15px; }
+.lucky-modal h2 { margin: 17px 0 6px; font-size: 25px; letter-spacing: -.04em; }
+.lucky-modal > p { margin: 0; color: #7e8988; font-size: 10px; }
+.lucky-reels { margin: 25px 0 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; padding: 10px; border: 1px solid rgba(255,210,63,.2); border-radius: 18px; background: #0d0e0e; box-shadow: inset 0 8px 22px rgba(0,0,0,.55); }
+.lucky-reel { min-width: 0; height: 126px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 13px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,.09); border-radius: 12px; background: linear-gradient(#202222, #303232 50%, #202222); }
+.lucky-reels.spinning .lucky-reel span { animation: lucky-spin .32s linear infinite; filter: blur(3px); }
+.lucky-reels.spinning .lucky-reel:nth-child(2) span { animation-duration: .27s; }
+.lucky-reels.spinning .lucky-reel:nth-child(3) span { animation-duration: .23s; }
+.lucky-reel::after { content: ''; position: absolute; inset: 50% 0 auto; height: 1px; background: rgba(255,210,63,.18); box-shadow: 0 -42px rgba(255,255,255,.035), 0 42px rgba(255,255,255,.035); }
+.lucky-reel small { z-index: 1; color: #808a89; font-size: 8px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.lucky-reel span { z-index: 1; display: flex; align-items: center; gap: 7px; color: #fff; font-size: 18px; font-weight: 900; }
+.lucky-reel span svg { width: 21px; color: var(--accent); }
+.lucky-reel.up span, .lucky-reel.up span svg { color: var(--green); }
+.lucky-reel.down span, .lucky-reel.down span svg { color: var(--red); }
+.lucky-options { z-index: 2; width: calc(100% - 16px); display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.lucky-options button { height: 34px; border: 1px solid rgba(255,255,255,.1); border-radius: 8px; color: #8f9998; background: #191a1a; font-size: 9px; font-weight: 800; cursor: pointer; }
+.lucky-options button.active { color: #171818; border-color: var(--accent); background: var(--accent); }
+.lucky-options button.active.up { color: #07160d; border-color: var(--green); background: var(--green); }
+.lucky-options button.active.down { color: #fff; border-color: var(--red); background: var(--red); }
+.lucky-amount { z-index: 2; width: calc(100% - 20px); height: 38px; display: flex; align-items: center; gap: 5px; padding: 0 8px; border: 1px solid rgba(255,210,63,.28); border-radius: 8px; background: #191a1a; }
+.lucky-amount > svg { width: 15px; color: var(--accent); }
+.lucky-amount > span { display: block; color: var(--accent); font-size: 13px; }
+.lucky-amount input { width: 100%; min-width: 0; border: 0; outline: 0; color: #fff; background: transparent; font-size: 15px; font-weight: 900; }
+.lucky-actions { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1.5fr; gap: 9px; }
+.lucky-actions button { height: 50px; border-radius: 12px; font-size: 11px; font-weight: 900; cursor: pointer; transition: transform .18s ease, filter .18s ease; }
+.lucky-edit { color: #d8dfde; border: 1px solid rgba(255,255,255,.12); background: #232525; }
+.lucky-open { border: 0; color: #151616; background: var(--accent); box-shadow: 0 10px 30px rgba(255,210,63,.17); }
+.lucky-actions button:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.06); }
+.lucky-actions button:disabled { cursor: wait; opacity: .55; transform: none; filter: none; }
+@keyframes lucky-spin { from { transform: translateY(-55px); opacity: .25; } 50% { opacity: .8; } to { transform: translateY(55px); opacity: .25; } }
+
 .balance-line { margin-top: 15px; display: flex; align-items: center; gap: 6px; color: #717d92; font-size: 9px; }
 .balance-line strong { color: #b6c0d0; margin-left: auto; }
 .active-trade { min-height: 310px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 17px; }
@@ -643,6 +680,9 @@ main { max-width: none; padding: 12px 14px 30px; }
   .asset-switcher button { flex: 1; min-width: 0; padding: 0 9px; }
   .market-status, .market-stats { display: none; }
   .price-chart { height: 315px; }
+  .lucky-modal { padding: 24px 16px 18px; }
+  .lucky-reels { grid-template-columns: 1fr; gap: 6px; }
+  .lucky-reel { height: 82px; gap: 7px; }
   .achievement-grid { grid-template-columns: 1fr; }
   .progress-hero { grid-template-columns: 100px 1fr; gap: 15px; }
   .progress-hero img { width: 100px; height: 100px; border-radius: 18px; }
